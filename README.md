@@ -30,11 +30,34 @@ Vectors read from: ~/mydir/en2.vectors
 ```
 Where the p-value is 0.014.
 
+## Running BLDict
+
+The dictionaries used for evaluation are provided in `en.*.dict`.
+
+The format is,
+
+`en1 en2 <tab> fr1 fr2 fr3`
+
+Where `en1` and `en2` are entries on the english side which all share `fr1, fr2, fr3` as possible translations. For eg.
+
+```dangerous hazardous unsafe risky        dangereux dangereuse```
+
+If you compute the english side tokens of the dictionary you should get 1510 (fr), 1425 (de), 1610(zh) and 1024(sv).
+
+
 ## Running CLDC
 
-Download the code
+Download the code for the Klementiev et al. paper from [here](https://dl.dropboxusercontent.com/u/19557502/document-representations.tar.gz).
 
 You will also need to procure the RCV2 Multilingual Corpus.
+
+For `en --> L` (train on english and test on language L)
+
+The english train split is same as one provided by Klementiev et al. Similarly for de's test split. The test splits for fr,sv,zh are in file `test-en-l2.txt` (There should be a distribution of 10 C, 300 E, 600 G, 900 M).
+
+For `L --> en`
+Train files for fr,sv,zh are in file `train-l2-en.txt`. For de, its same as before. The test files (en) are also same as before.
+
 
 ## Running CLDEP
 
