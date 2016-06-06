@@ -1,5 +1,19 @@
 Data and scripts for reproducing the results from the ACL 2016 paper.
 
+
+## Running Monolingual Evaluation
+
+### Running QVec
+
+### Running Word Similarity with Steigler's p-value
+
+## Running CLDC
+
+## Running CLDEP
+
+
+
+
 ###Reference
 
 ```
