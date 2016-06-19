@@ -1,5 +1,5 @@
 Data and scripts for reproducing the results from the ACL 2016 paper.
-
+The vectors used for the experiments can be found [here](http://bilbo.cs.illinois.edu/~upadhya3/embedding-release.zip).
 
 ## Running Monolingual Evaluation
 
@@ -44,12 +44,13 @@ Where `en1` and `en2` are entries on the english side which all share `fr1, fr2,
 
 If you compute the english side tokens of the dictionary you should get 1510 (fr), 1425 (de), 1610(zh) and 1024(sv).
 
-The evaluation code is provided under `my-evaluation`. First setup the dependencies using mvn compile and `mvn dependency:copy-dependencies`.
+The evaluation code is provided under `my-evaluation`. First setup the dependencies using `mvn compile` and `mvn dependency:copy-dependencies`.
 Then run,
 
 ```
 sh run.sh evaluateBiDict de ~/mydir/bicvm_vectors/bicvm.en-de.en.200 ~/mydir/bicvm_vectors/bicvm.en-de.de.200
 ```
+This should print the top-10 accuracy and MRR.
 
 ## Running CLDC
 
