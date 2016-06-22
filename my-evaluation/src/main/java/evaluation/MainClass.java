@@ -57,6 +57,118 @@ public class MainClass {
 		CreateBLDict dd = new CreateBLDict(en_vectors,fr_vectors, enside, gold);
     }
 
+	@CommandDescription(description = "parallelFile(uniq.en-es) alignFile(tr.*.intersect) outfile(*.dict) minCount(0-5) limit(-1)")
+	public static void WriteDictForCCA(String parallelFile,String alignFile, String outfile, String minCount, String limit) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				new FileInputStream(parallelFile), "UTF8"));
+		BufferedReader align = new BufferedReader(new FileReader(new File(alignFile)));
+		int limitc = Integer.parseInt(limit);
+		int minc=Integer.parseInt(minCount);
+		Counter<Pair<String,String>> cc= new Counter<>();
+		int c=0;
+		while(true) {
+			String line = br.readLine();
+			if(line==null)
+				break;
+			String tmp = align.readLine();
+			if(tmp==null)
+				break;
+
+			String[] as = tmp.split("\\s+");
+//			System.out.println(line);
+//			System.out.println(tmp);
+			String[] tmp1 = line.split("\\t");
+			String enstr= tmp1[0].trim();
+			String frstr = tmp1[1].trim();
+			String[] entoks = enstr.split("\\s+");
+			String[] frtoks = frstr.split("\\s+");
+//			System.out.println(Arrays.asList(entoks));
+//			System.out.println(Arrays.asList(frtoks));
+			c++;
+			if(c%100000==0)
+			{
+				System.out.println("c="+c);
+			}
+			if(c==limitc) // give -1
+				break;
+			for (String aa : as) {
+				if(!aa.contains("-")) {
+					System.out.println("not aligned");
+					continue;
+				}
+				String[] pp = aa.split("-");
+				int idx = Integer.parseInt(pp[0]);
+				int jdx = Integer.parseInt(pp[1]);
+//                System.out.println(idx + " " + jdx + " " + entoks[idx] + " " + frtoks[jdx]);
+				try {
+					cc.incrementCount(new Pair<String, String>(entoks[idx], frtoks[jdx]));
+				}
+				catch (ArrayIndexOutOfBoundsException e)
+				{
+					System.out.println("ERROR on line:"+c);
+					System.out.println(entoks.length+" "+frtoks.length);
+				}
+			}
+		}
+		PrintWriter w = new PrintWriter(outfile);
+		List<Pair<String,String>> candidates = new ArrayList<>();
+		Map<String,Pair<String,Double>> eng2frCounts = new HashMap<>();
+		Map<String,Pair<String,Double>> fr2engCounts = new HashMap<>();
+		for(Pair<String,String>ii:cc.getSortedItemsHighestFirst())
+		{
+			double cint=cc.getCount(ii);
+			if(cint>minc)
+			{
+				if (Pattern.matches("\\p{Punct}", ii.getFirst())) continue;
+				if (Pattern.matches("[0-9]", ii.getFirst())) continue;
+				if (Pattern.matches("\\p{Punct}", ii.getSecond())) continue;
+				if (Pattern.matches("[0-9]", ii.getSecond())) continue;
+				// w.println(ii.getFirst() + " ||| " + ii.getSecond());
+				String eetok=ii.getFirst();
+				String fftok=ii.getSecond();
+				if(!eng2frCounts.containsKey(eetok))
+				{
+					eng2frCounts.put(eetok,new Pair<String,Double>(fftok,cint));
+				}
+				else
+				{
+					Pair<String,Double>curr=eng2frCounts.get(eetok);
+					if(curr.getSecond()<cint)
+					{
+						eng2frCounts.put(eetok,new Pair<String,Double>(fftok,cint));
+					}
+				}
+
+				if(!fr2engCounts.containsKey(fftok))
+				{
+					fr2engCounts.put(fftok,new Pair<String,Double>(eetok,cint));
+				}
+				else
+				{
+					Pair<String,Double>curr=fr2engCounts.get(fftok);
+					if(curr.getSecond()<cint)
+					{
+						fr2engCounts.put(fftok,new Pair<String,Double>(eetok,cint));
+					}
+				}
+			}
+		}
+		System.out.println("computed maps...");
+		// intersect
+		for(String etok:eng2frCounts.keySet())
+		{
+			for(String ftok:fr2engCounts.keySet())
+			{
+				if(eng2frCounts.get(etok).getFirst().equals(ftok) && fr2engCounts.get(ftok).getFirst().equals(etok))
+				{
+					w.println(etok+" ||| "+ftok);
+				}
+			}
+		}
+		w.close();
+	}
+
+
 	public static void main(String args[]) throws Exception {
 		InteractiveShell<MainClass> tester = new InteractiveShell<MainClass>(
 				MainClass.class);
