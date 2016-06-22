@@ -52,6 +52,10 @@ sh run.sh evaluateBiDict de ~/mydir/bicvm_vectors/bicvm.en-de.en.200 ~/mydir/bic
 ```
 This should print the top-10 accuracy and MRR.
 
+Code to extract dictionaries from word alignments for performing CCA is also provided in my-evaluation. Try running,
+```
+run.sh WriteDictForCCA parallelFile(uniq.en-es) alignFile(tr.*.intersect) outfile(*.dict) minCount(0-5) limit(-1)
+```
 ## Running CLDC
 
 Download the code for the Klementiev et al. paper from [here](https://dl.dropboxusercontent.com/u/19557502/document-representations.tar.gz).
