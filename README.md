@@ -1,4 +1,4 @@
-Data and scripts for reproducing the results from the ACL 2016 paper.
+Data and scripts for reproducing the results from the [ACL 2016 paper](http://arxiv.org/abs/1604.00425).
 The vectors used for the experiments can be found [here](http://bilbo.cs.illinois.edu/~upadhya3/embedding-release.zip).
 
 ## Running Monolingual Evaluation
